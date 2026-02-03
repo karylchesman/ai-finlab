@@ -14,5 +14,8 @@ class Settings(BaseSettings):
     sparse_model: str = "Qdrant/bm25"
     colbert_model: str = "colbert-ir/colbertv2.0"
 
+    groq_api_key: str
+    groq_model_name: str = "llama-3.1-8b-instant"
+
 
 settings = Settings()
