@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -6,7 +7,7 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="allow"
     )
 
-    qdrant_url: str
+    qdrant_url: str = Field(validation_alias="qdrant_host")
     qdrant_api_key: str
     collection_name: str = "financial"
 
