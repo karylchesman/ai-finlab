@@ -1,7 +1,9 @@
 from config.prompts import RAG_PROMPT
 from config.settings import settings
-from groq import Groq
 from models.rag import RAGResponse
+
+# from groq import Groq
+from openai import Client as Groq
 
 from services.search import SearchService
 

@@ -11,8 +11,10 @@ from config.prompts import (
     SENTIMENT_QUERY_TEMPLATE,
 )
 from config.settings import settings
-from groq import AsyncGroq
 from models.agent import AgentRequest, AgentResponse
+
+# from groq import AsyncGroq
+from openai import AsyncClient as AsyncGroq
 
 from services.search import SearchService
 

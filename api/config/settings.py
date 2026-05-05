@@ -15,8 +15,9 @@ class Settings(BaseSettings):
     sparse_model: str = "Qdrant/bm25"
     colbert_model: str = "colbert-ir/colbertv2.0"
 
-    groq_api_key: str
-    groq_model_name: str = "llama-3.1-8b-instant"
+    groq_api_key: str = Field(validation_alias="openai_api_key")
+    # groq_model_name: str = "llama-3.1-8b-instant"
+    groq_model_name: str = "gpt-4.1-mini"
 
 
 settings = Settings()
