@@ -17,7 +17,7 @@ class Settings(BaseSettings):
 
     groq_api_key: str = Field(validation_alias="openai_api_key")
     # groq_model_name: str = "llama-3.1-8b-instant"
-    groq_model_name: str = "gpt-4.1-mini"
+    groq_model_name: str = "gpt-4o-mini"
 
 
 settings = Settings()
