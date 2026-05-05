@@ -26,10 +26,12 @@ class AgentService:
             api_key=settings.groq_api_key,
         )
 
-    def _run_queries(self, queries: list[str], limit: int):
+    def _run_queries(self, queries: list[str], limit: int, filter: dict | None = None):
         all_results = []
         for query in queries:
-            search_results = self.search_service.search(query=query, limit=limit)
+            search_results = self.search_service.search(
+                query=query, limit=limit, filters=filter
+            )
             all_results.extend([result.text for result in search_results.results])
         return "\n\n".join(all_results)
 
@@ -46,26 +48,29 @@ class AgentService:
         )
         return response.choices[0].message.content
 
-    async def _analyse_fundamentals(self, limit: int):
-        context = self._run_queries(FUNDAMENTAL_QUERIES, limit)
+    async def _analyse_fundamentals(self, ticker: str, limit: int):
+        filter = {"ticker": ticker, "form_type": "10-K"}
+        context = self._run_queries(FUNDAMENTAL_QUERIES, limit, filter)
         prompt = FUNDAMENTAL_PROMPT.format(context=context)
         return await self._generate_completion(prompt)
 
-    async def _analyse_momentum(self, limit: int):
-        context = self._run_queries(MOMENTUM_QUERIES, limit)
+    async def _analyse_momentum(self, ticker: str, limit: int):
+        filter = {"ticker": ticker, "form_type": "10-Q"}
+        context = self._run_queries(MOMENTUM_QUERIES, limit, filter)
         prompt = MOMENTUM_PROMPT.format(context=context)
         return await self._generate_completion(prompt)
 
     async def _analyse_sentiment(self, ticker: str, limit: int):
+        filter = {"ticker": ticker, "source": "yahoo_finance"}
         query = SENTIMENT_QUERY_TEMPLATE.format(ticker=ticker)
-        results = self.search_service.search(query=query, limit=limit)
+        results = self.search_service.search(query=query, limit=limit, filters=filter)
         context = "\n\n".join([result.text for result in results.results])
         prompt = SENTIMENT_PROMPT.format(context=context)
         return await self._generate_completion(prompt)
 
     async def analyse(self, ticker: str, limit: int):
-        fundamental_task = self._analyse_fundamentals(limit)
-        momentum_task = self._analyse_momentum(limit)
+        fundamental_task = self._analyse_fundamentals(ticker, limit)
+        momentum_task = self._analyse_momentum(ticker, limit)
         sentiment_task = self._analyse_sentiment(ticker, limit)
 
         (
