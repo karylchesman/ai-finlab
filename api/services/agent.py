@@ -24,6 +24,7 @@ from models.agent import (
 from openai import AsyncClient as AsyncGroq
 
 from services.search import SearchService
+from services.ticker_extractor import TickerExtractor
 
 
 class AgentService:
@@ -33,6 +34,7 @@ class AgentService:
             api_key=settings.groq_api_key,
         )
         self.client = instructor.from_openai(client, mode=instructor.Mode.JSON)
+        self.ticker_extractor = TickerExtractor()
 
     def _run_queries(self, queries: list[str], limit: int, filter: dict | None = None):
         all_results = []
@@ -76,7 +78,11 @@ class AgentService:
         prompt = SENTIMENT_PROMPT.format(context=context)
         return await self._generate_completion(prompt, SentimentAnalysis)
 
-    async def analyse(self, ticker: str, limit: int):
+    async def analyse(self, query: str, limit: int):
+        ticker = self.ticker_extractor.extract_ticker(query)
+        if not ticker or ticker == "NONE":
+            raise ValueError("No ticker found in query")
+
         fundamental_task = self._analyse_fundamentals(ticker, limit)
         momentum_task = self._analyse_momentum(ticker, limit)
         sentiment_task = self._analyse_sentiment(ticker, limit)
@@ -98,6 +104,7 @@ class AgentService:
         )
 
         return AgentResponse(
+            query=query,
             ticker=ticker,
             fundamental_analysis=fundamental_analysis,  # type: ignore
             momentum_analysis=momentum_analysis,  # type: ignore

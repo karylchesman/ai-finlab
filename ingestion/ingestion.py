@@ -18,10 +18,10 @@ EMAIL_ADDRESS = "karylbps@gmail.com"
 
 edgar_client = EdgarClient(email=EMAIL_ADDRESS)
 
-data_10k = edgar_client.fetch_filling_date(ticker="AAPL", form_type="10-K")
+data_10k = edgar_client.fetch_filling_date(ticker="IBM", form_type="10-K")
 text_10k = edgar_client.get_combined_text(data_10k)
 
-data_10q = edgar_client.fetch_filling_date(ticker="AAPL", form_type="10-Q")
+data_10q = edgar_client.fetch_filling_date(ticker="IBM", form_type="10-Q")
 text_10q = edgar_client.get_combined_text(data_10q)
 
 chunker = SemanticChunker(max_tokens=MAX_TOKENS)
