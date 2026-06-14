@@ -9,11 +9,11 @@ from utils.simple_chunker import SimpleChunker
 
 load_dotenv()
 
-DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+DENSE_MODEL = "intfloat/multilingual-e5-large"
 SPARSE_MODEL = "Qdrant/bm25"
 COLBERT_MODEL = "colbert-ir/colbertv2.0"
 COLLECTION_NAME = "financial"
-MAX_TOKENS = 300
+MAX_TOKENS = 500
 
 qdrant_client = QdrantClient(
     url=os.getenv("QDRANT_HOST"),
@@ -21,7 +21,7 @@ qdrant_client = QdrantClient(
 )
 
 news_client = NewsClient()
-news_data = news_client.fetch_news(ticker="IBM", max_stories=10)
+news_data = news_client.fetch_news(ticker="AAPL", max_stories=10)
 
 chunker = SimpleChunker(max_tokens=MAX_TOKENS)
 

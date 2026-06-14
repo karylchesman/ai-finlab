@@ -9,19 +9,19 @@ from utils.semantic_chunker import SemanticChunker
 
 load_dotenv()
 
-DENSE_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
+DENSE_MODEL = "intfloat/multilingual-e5-large"
 COLLECTION_NAME = "financial"
 SPARSE_MODEL = "Qdrant/bm25"
 COLBERT_MODEL = "colbert-ir/colbertv2.0"
-MAX_TOKENS = 300
+MAX_TOKENS = 500
 EMAIL_ADDRESS = "karylbps@gmail.com"
 
 edgar_client = EdgarClient(email=EMAIL_ADDRESS)
 
-data_10k = edgar_client.fetch_filling_date(ticker="IBM", form_type="10-K")
+data_10k = edgar_client.fetch_filling_date(ticker="AAPL", form_type="10-K")
 text_10k = edgar_client.get_combined_text(data_10k)
 
-data_10q = edgar_client.fetch_filling_date(ticker="IBM", form_type="10-Q")
+data_10q = edgar_client.fetch_filling_date(ticker="AAPL", form_type="10-Q")
 text_10q = edgar_client.get_combined_text(data_10q)
 
 chunker = SemanticChunker(max_tokens=MAX_TOKENS)
